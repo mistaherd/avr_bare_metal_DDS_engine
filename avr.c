@@ -33,7 +33,7 @@ uint8_t SET_EEPROM_MODE(modes_t mode ,uint8_t EEPROM_Control_REG_value){
   }
   return EEPROM_Control_REG_value;
 }
-void WAIT_AMOUNT_OF_CLOCK_CYCLES(int8_t Amount_of_clock_cycles){
+static inline void WAIT_AMOUNT_OF_CLOCK_CYCLES(int8_t Amount_of_clock_cycles){
   // caluute the clock Frequnecy 1/F = the amount time for 1 cycle
   while(Amount_of_clock_cycles--){
     __asm__ volatile ("nop");
@@ -42,14 +42,14 @@ void WAIT_AMOUNT_OF_CLOCK_CYCLES(int8_t Amount_of_clock_cycles){
 int8_t  EEPROM_WRITE_ENABLE(){
   // consider a while but it  be nice  to not have to  have in a loop
   // Wait until EEPE becomes zero.
-  if (EEPROM_Control_Read_REG&0x2==0x0){
+  if ((EEPROM_Control_Read_REG&0x2)==0x0){
     // Wait until SELFPRGEN in SPMCSR becomes zero.
-    if (SPMCSR_read&0x0==0){
+    if ((SPMCSR_read&0x0)==0){
       // Write a logical one to the EEMPE bit while writing a zero to EEPE in EECR.
       EEPROM_Control_REG=0x6;
 
       // Within four clock cycles after setting EEMPE, write a logical one to EEPE.
-      Wait_Amount_of_clock_cycles(4);
+      WAIT_AMOUNT_OF_CLOCK_CYCLES(4);
       EEPROM_Control_REG =0x2;
       return 0;
     }
@@ -60,7 +60,7 @@ int8_t  EEPROM_WRITE_ENABLE(){
     //break //in case of we write a  while loop
   }
 }
-void EEPROM_WRITE(uint16_t uiAddress,Unsigened char ucData){
+void EEPROM_WRITE(uint16_t uiAddress,unsigned char ucData){
 
   EEARL_REG=uiAddress;
   EEPROM_Data_REG=ucData;
@@ -76,7 +76,7 @@ void AVR_DRIVER_INIT(){
   EEARL_REG =0x8;
   // set the EEPROM_Control_REG_value
   EEPROM_Control_REG=0xC;
-  EEPROM_Control_REG=SET_EEPROM_MODE(Erase_and_write,EEPROM_Control_REG);
+  EEPROM_Control_REG=SET_EEPROM_MODE(Erase_and_Write,EEPROM_Control_REG);
   EEPROM_WRITE_ENABLE();
 
 }
