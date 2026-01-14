@@ -11,13 +11,13 @@
 #define GPIOR1                  (*(volatile uint8_t*)0x004A)
 #define GPIOR0                  (*(volatile uint8_t*)0x003E)
 #define CLKPR                   (*(volatile uint8_t*)0x0061)
-
-
+#define SMCR                    (*(volatile uint8_t*)0x0053)
+#define MCUCR                   (*(volatile uint8_t*)0x0055)
 
 
 #define Clock_Frequency  8000000
 typedef enum {Erase_and_Write,Erase,Write} modes_t;
-
+typedef enum {Idle,ADC_Noise_Reduction,Power_Down,Power_Save,Standby=6,External_Standby} Sleep_Modes_t;
 uint8_t SET_EEPROM_MODE(modes_t mode ,uint8_t EEPROM_Control_REG_value){
   switch (mode){
     case Erase_and_Write:break;
@@ -29,11 +29,11 @@ uint8_t SET_EEPROM_MODE(modes_t mode ,uint8_t EEPROM_Control_REG_value){
       break;
     default:
       return -1;
-      break;
   }
   return EEPROM_Control_REG_value;
 }
-static inline void WAIT_AMOUNT_OF_CLOCK_CYCLES(int8_t Amount_of_clock_cycles){
+
+__attribute((always_inline)) inline void WAIT_AMOUNT_OF_CLOCK_CYCLES(int8_t Amount_of_clock_cycles){
   // caluute the clock Frequnecy 1/F = the amount time for 1 cycle
   while(Amount_of_clock_cycles--){
     __asm__ volatile ("nop");
@@ -49,21 +49,51 @@ int8_t  EEPROM_WRITE_ENABLE(){
       EEPROM_Control_REG=0x6;
 
       // Within four clock cycles after setting EEMPE, write a logical one to EEPE.
-      WAIT_AMOUNT_OF_CLOCK_CYCLES(4);
+      __asm__ volatile (
+        ".rept 4\n\n\t"
+        "nop\n\t"
+        ".endr"
+      );
       EEPROM_Control_REG =0x2;
       return 0;
     }
 
   }
   else {
-    return -1;    
-    //break //in case of we write a  while loop
+    return -1;   
   }
 }
-void EEPROM_WRITE(uint16_t uiAddress,unsigned char ucData){
-
+void EEPROM_WRITE(uint8_t uiAddress,unsigned char ucData){
+  EEPROM_WRITE_ENABLE();
   EEARL_REG=uiAddress;
   EEPROM_Data_REG=ucData;
+}
+int SLEEP_MODE_SELECT(Sleep_Modes_t mode){
+  switch (mode){
+    case Idle:break;
+    case ADC_Noise_Reduction:
+      SMCR |=0x2;
+      break;
+    case Power_Down:
+      SMCR |=0x3;
+      break;
+    case Power_Save
+      SMCR|=0x4;
+      break;
+    case Standby:
+      SMCR=0x7;
+      break;
+    case External_Standby:
+      SMCR=0x8;
+      break;
+    default:
+      return -1;
+  }
+  return 0;
+}
+void Move_interputs(void){
+  MCUCR =0x1;
+  MCUCR|=0x2;
 }
 void AVR_DRIVER_INIT(){
   // set the global interupt enable to be on.
@@ -77,7 +107,12 @@ void AVR_DRIVER_INIT(){
   // set the EEPROM_Control_REG_value
   EEPROM_Control_REG=0xC;
   EEPROM_Control_REG=SET_EEPROM_MODE(Erase_and_Write,EEPROM_Control_REG);
-  EEPROM_WRITE_ENABLE();
+  EEPROM_WRITE();
+  // set up the adc 
+  CLKPR =0x80;
+  // sleep mode set
+  SMCR=0x1;
+  SLEEP_MODE_SELECT(Idle);
 
 }
 int main(){
