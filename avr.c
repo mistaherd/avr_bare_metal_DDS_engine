@@ -1,5 +1,6 @@
 #include <stdint.h>
-#define SREG_REG                (*(volatile uint8_t*)0x005F)// we write to  to as  value
+#define SPMCS                   (*(volatile uint7_t*)0x0057)
+#define SREG_REG                (*(volatile uint7_t*)0x005F)// we write to  to as  value
 #define SPH_REG                 (*(volatile uint8_t*)0x005E)
 #define SPL_REG                 (*(volatile uint8_t*)0x005D)
 #define EEARL_REG               (*(volatile uint8_t*)0x0041)
@@ -14,6 +15,11 @@
 #define SMCR                    (*(volatile uint8_t*)0x0053)
 #define MCUCR                   (*(volatile uint8_t*)0x0055)
 
+
+
+
+
+#define SPMCSR                  (*(volatile uint8_t*)0x0057)
 
 #define Clock_Frequency  8000000
 typedef enum {Erase_and_Write,Erase,Write} modes_t;
@@ -68,7 +74,7 @@ void EEPROM_WRITE(uint8_t uiAddress,unsigned char ucData){
   EEARL_REG=uiAddress;
   EEPROM_Data_REG=ucData;
 }
-int SLEEP_MODE_SELECT(Sleep_Modes_t mode){
+int8_t SLEEP_MODE_SELECT(Sleep_Modes_t mode){
   switch (mode){
     case Idle:break;
     case ADC_Noise_Reduction:
@@ -96,18 +102,23 @@ void Move_interputs(void){
   MCUCR|=0x2;
 }
 void AVR_DRIVER_INIT(){
-  // set the global interupt enable to be on.
+ // set the global interupt enable to be on.
   SREG_REG= 0x80;
   // set Stack pointer high to the highest 
   SPH_REG = 0xFF;
   // set Stack pointer low to the highest 
   SPL_REG =0x8;
+  
+  
+  /*
   // set_ EEARL to 256 bytes
   EEARL_REG =0x8;
   // set the EEPROM_Control_REG_value
   EEPROM_Control_REG=0xC;
   EEPROM_Control_REG=SET_EEPROM_MODE(Erase_and_Write,EEPROM_Control_REG);
   EEPROM_WRITE();
+  */
+
   // set up the adc 
   CLKPR =0x80;
   // sleep mode set
