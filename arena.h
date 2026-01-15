@@ -1,10 +1,17 @@
 #ifndef ARENA_H
 #define ARENA_H
-
+#include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
 #endif // ARENA_H
 
 #ifdef ARENA_IMPLEMENTATION
-#include <stdlib.h>
+typedef struct {
+        uint8_t *base;// starting address of arena
+        size_t size;
+        size_t used;
+}Arena;
+
 Arena *arena_init(size_t size){
     Arena *arena=malloc(sizeof(Arena));
     if (!arena) return NULL;
