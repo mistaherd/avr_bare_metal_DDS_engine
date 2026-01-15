@@ -3,15 +3,19 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
-#endif // ARENA_H
-
-#ifdef ARENA_IMPLEMENTATION
 typedef struct {
         uint8_t *base;// starting address of arena
         size_t size;
         size_t used;
 }Arena;
 
+Arena *arena_init(size_t size);
+void *arena_alloc(Arena *arena,size_t size);
+void *arena_reset(Arena *arena);
+void *free_arena(Arena *arena);
+#endif // ARENA_H
+
+#ifdef ARENA_IMPLEMENTATION
 Arena *arena_init(size_t size){
     Arena *arena=malloc(sizeof(Arena));
     if (!arena) return NULL;
