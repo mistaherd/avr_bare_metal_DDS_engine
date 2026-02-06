@@ -19,7 +19,6 @@
 
 
 
-#define SPMCSR                  (*(volatile uint8_t*)0x0057)
 
 #define Clock_Frequency  8000000
 typedef enum {Erase_and_Write,Erase,Write} modes_t;
