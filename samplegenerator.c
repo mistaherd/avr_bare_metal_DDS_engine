@@ -5,8 +5,8 @@
 #define ARENA_IMPLEMENTATION
 #include "arena.h"
 int main(){
-  size_t Sample_size=0xFF;
-  //const double M_PI =3.14159;
+  size_t Sample_size=0x100;
+  const double M_PI =3.14159;
   
   Arena *arena =arena_init((Sample_size*sizeof(double))+1024);
   if (!arena )return 1;
