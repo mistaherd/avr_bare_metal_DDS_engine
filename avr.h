@@ -30,10 +30,12 @@
 #define TCCR0A                  (*(volatile uint8_t*)0x0044) // mode 
 #define TCCR0B                  (*(volatile uint8_t*)0x0045) // control clock divider
 #define TCNTO                   (*(volatile uint8_t*)0x0046)
+#define TCNTO_READ              (*(volatile uint8_t*)0x0026)
 #define OCROA                   (*(volatile uint8_t*)0x0047)
 #define OCROB                   (*(volatile uint8_t*)0x0048)
 #define TIMSKO                  (*(volatile uint8_t*)0x006E)
 #define TIFRO                   (*(volatile uint8_t*)0x0035)
+#define TIFRO_READ              (*(volatile uint8_t*)0x0015)
 #define SPMCS                   (*(volatile uint8_t*)0x0057)
 #define SREG_REG                (*(volatile uint8_t*)0x005F)// we write to  to as  value
 #define SPH_REG                 (*(volatile uint8_t*)0x005E)
@@ -92,11 +94,10 @@ int  EEPROM_WRITE_ENABLE(){
       EEPROM_Control_REG=0x6;
 
       // Within four clock cycles after setting EEMPE, write a logical one to EEPE.
-      __asm__ volatile (
-        ".rept 4\n\n\t"
-        "nop\n\t"
-        ".endr"
-      );
+      while(!(TIFRO_READ&&0x2)){
+      // do nothing for the cycles
+      }//set counter to 4 
+      
       EEPROM_Control_REG =0x2;
       return 0;
     }
@@ -167,7 +168,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A|=(0b11<<6);
           break;
         default:
-          break return -1:
+          break return -1;
       }
       break;
     case PHASE_CORRECT:
@@ -185,7 +186,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1:
+          break return -1;
       }
       break;
     case CTC:
@@ -194,6 +195,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A &=~(0b11<<6);
           break;
         case 1:
+          // we are assumeing  that it normal port op ill look into 
           TCCR0A |=(0b01<<6);
           break ;
         case 2:
@@ -203,7 +205,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1:
+          break return -1;
       }
       break;
     case FAST_PWM:
@@ -211,7 +213,9 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
         case 0:
           TCCR0A &=~(0b11<<6);
           break;
-        case 1:
+          case 1:
+          // setting WGM02 to 1 to toggle compare match 
+          TCCR0B |=0x8; 
           TCCR0A |=(0b01<<6);
           break ;
         case 2:
@@ -221,7 +225,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1:
+          break return -1;
       }
       break;
     case PHASE_CORRECT_OCRA:
@@ -239,7 +243,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1:
+          break return -1;
       }
       break;
     case FAST_PWM_OCRA:
@@ -257,7 +261,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1:
+          break return -1;
       }
       break;
     
@@ -280,5 +284,15 @@ void AVR_DRIVER_INIT(){
 
   // set the global interupt enable to be on.
   SREG_REG= 0x80;
-}
+  // once loaded set TCCR0B to clkio no prescaling 
+  TCCR0B =0x1;
+  TCCR0A_MOODE_SET(FAST_PWM,1)
+  // set the  OCROB interupt as  bit 4 
+  OCROA |=0x10; 
+  // set the timer interupt mask 
+  // enable the interupt
+  TIMSKO =0x2;
+  // set the match flag to OCROA
+  TIFRO=
+ }
 #endif 
