@@ -1,58 +1,87 @@
-#ifndef NO_STDINT
-  #include <stdint.h>
-#else
-  typedef unsigned char uint8_t;
-#endif
+#include <stdint.h>
 #ifdef AVR_DRIVER_IMPLEMENTATION
-#define OSCCAL                  (*(volatile uint8_t*)0x0066)
-#define CLKPR                   (*(volatile uint8_t*)0x0061)
-#define SMCR                    (*(volatile uint8_t*)0x0053)
-#define PRR                     (*(volatile uint8_t*)0x0064)
-#define WDTCSR                  (*(volatile uint8_t*)0x0060)
-#define MCUCR                   (*(volatile uint8_t*)0x0055)
-#define EICRA                   (*(volatile uint8_t*)0x0069)
-#define EIMSK                   (*(volatile uint8_t*)0x003D)
-#define EIFR                    (*(volatile uint8_t*)0x003C)
-#define PCICR                   (*(volatile uint8_t*)0x0068)
-#define PCIFR                   (*(volatile uint8_t*)0x003B)
-#define PCMSK2                  (*(volatile uint8_t*)0x006D)
-#define PCMSK1                  (*(volatile uint8_t*)0x006C)
-#define PCMSK0                  (*(volatile uint8_t*)0x006B)
-#define PORTB                   (*(volatile uint8_t*)0x0025)
-#define DDRB                    (*(volatile uint8_t*)0x0024)
-#define PINB                    (*(volatile uint8_t*)0x0023)
-#define PORTC                   (*(volatile uint8_t*)0x0028)
-#define DDRC                    (*(volatile uint8_t*)0x0027)
-#define PINC                    (*(volatile uint8_t*)0x0026)
-#define PORTD                   (*(volatile uint8_t*)0x002B)
-#define DDRD                    (*(volatile uint8_t*)0x002A)
-#define PIND                    (*(volatile uint8_t*)0x0029)
-#define TCCR0A                  (*(volatile uint8_t*)0x0044) // mode 
-#define TCCR0B                  (*(volatile uint8_t*)0x0045) // control clock divider
-#define TCNTO                   (*(volatile uint8_t*)0x0046)
-#define TCNTO_READ              (*(volatile uint8_t*)0x0026)
-#define OCROA                   (*(volatile uint8_t*)0x0047)
-#define OCROB                   (*(volatile uint8_t*)0x0048)
-#define TIMSKO                  (*(volatile uint8_t*)0x006E)
-#define TIFRO                   (*(volatile uint8_t*)0x0035)
-#define TIFRO_READ              (*(volatile uint8_t*)0x0015)
-#define SPMCS                   (*(volatile uint8_t*)0x0057)
-#define SREG_REG                (*(volatile uint8_t*)0x005F)// we write to  to as  value
-#define SPH_REG                 (*(volatile uint8_t*)0x005E)
-#define SPL_REG                 (*(volatile uint8_t*)0x005D)
-#define EEARL_REG               (*(volatile uint8_t*)0x0041)
-#define EEDR_W                  (*(volatile uint8_t*)0x0040)
-#define EEDR_R                  (*(volatile uint8_t*)0x0020)// use for writeing datat to be store at 0x8 per 
-#define EEPROM_Control_REG      (*(volatile uint8_t*)0x003F)
-#define EEPROM_Control_Read_REG (*(volatile uint8_t*)0x001F)
-#define SPMCSR_read             (*(volatile uint8_t*)0x0037)
-#define GPIOR2                  (*(volatile uint8_t*)0x004B)
-#define GPIOR1                  (*(volatile uint8_t*)0x004A)
-#define GPIOR0                  (*(volatile uint8_t*)0x003E)
-#define CLKPR                   (*(volatile uint8_t*)0x0061)
-#define SMCR                    (*(volatile uint8_t*)0x0053)
+// AVR Mmemories
+#define GPIOR2                  (*(volatile uint8_t*)0x4B)
+#define GPIOR1                  (*(volatile uint8_t*)0x4A)
+#define GPIOR0                  (*(volatile uint8_t*)0x3E)
+#define EEARL_REG               (*(volatile uint8_t*)0x41)
+#define EEDR_W                  (*(volatile uint8_t*)0x40)
+#define EEDR_R                  (*(volatile uint8_t*)0x20)// use for writeing datat to be store at 0x8 per 
+#define EEPROM_Control_REG      (*(volatile uint8_t*)0x3F)
+#define EEPROM_Control_Read_REG (*(volatile uint8_t*)0x1F)
+// system Clock 
+#define OSCCAL                  (*(volatile uint8_t*)0x66)
+#define CLKPR                   (*(volatile uint8_t*)0x61)
+// Power mangement 
+#define SMCR                    (*(volatile uint8_t*)0x53)
+#define PRR                     (*(volatile uint8_t*)0x64)
+#define MCUCR                   (*(volatile uint8_t*)0x55)
+// system control and reset
+#define MCUSR                   (*(volatile uint8_t*))
+#define WDTCSR                  (*(volatile uint8_t*)0x60)
+#define EICRA                   (*(volatile uint8_t*)0x69)
+#define EIMSK                   (*(volatile uint8_t*)0x3D)
+#define EIFR                    (*(volatile uint8_t*)0x3C)
+#define PCICR                   (*(volatile uint8_t*)0x68)
+#define PCIFR                   (*(volatile uint8_t*)0x3B)
+#define PCMSK2                  (*(volatile uint8_t*)0x6D)
+#define PCMSK1                  (*(volatile uint8_t*)0x6C)
+#define PCMSK0                  (*(volatile uint8_t*)0x6B)
+#define TCCR0A                  (*(volatile uint8_t*)0x44) // mode 
+#define TCCR0B                  (*(volatile uint8_t*)0x45) // control clock divider
+#define TCNTO                   (*(volatile uint8_t*)0x46)
+#define TCNTO_READ              (*(volatile uint8_t*)0x26)
+#define TCCR1A                  (*(volatile uint8_t*)0x80)
+#define TCCR1B                  (*(volatile uint8_t*)0x81)
+#define TCCR1C                  (*(volatile uint8_t*)0x82)
+#define TCNT1H                  (*(volatile uint8_t*)0x85)
+#define TCNT1L                  (*(volatile uint8_t*)0x84)
+#define OCR1AH                  (*(volatile uint8_t*)0x89)
+#define OCR1AL                  (*(volatile uint8_t*)0x88)
+#define OCR1BH                  (*(volatile uint8_t*)0x8B)
+#define OCR1BL                  (*(volatile uint8_t*)0x8A)
+#define ICR1H                   (*(volatile uint8_t*)0x87)
+#define ICR1L                   (*(volatile uint8_t*)0x86)
+#define TIMSK1                  (*(volatile uint8_t*)0x6F)
+#define TIFR1                   (*(volatile uint8_t*)0x36)
+#define GTCCR                   (*(volatile uint8_t*)0x43)
+#define TCCR2A                  (*(volatile uint8_t*)0xB0)
+#define TCCR2B                  (*(volatile uint8_t*)0xB1)
+#define TCNT2                   (*(volatile uint8_t*)0xB2)
+#define OCR2A                   (*(volatile uint8_t*)0xB3)
+#define OCR2B                   (*(volatile uint8_t*)0xB4)
+#define TIMSK2                  (*(volatile uint8_t*)0x70)
+#define TIFR2                   (*(volatile uint8_t*)0x37)
+#define ASSR                    (*(volatile uint8_t*)0xB6)
+#define OCROA                   (*(volatile uint8_t*)0x47)
+#define OCROB                   (*(volatile uint8_t*)0x48)
+#define TIMSKO                  (*(volatile uint8_t*)0x6E)
+#define TIFRO                   (*(volatile uint8_t*)0x35)
+#define TIFRO_READ              (*(volatile uint8_t*)0x15)
+#define SPMCS                   (*(volatile uint8_t*)0x57)
+#define SREG_REG                (*(volatile uint8_t*)0x5F)// we write to  to as  value
+#define SPH_REG                 (*(volatile uint8_t*)0x5E)
+#define SPL_REG                 (*(volatile uint8_t*)0x5D)
 
-
+#define SPMCSR_read             (*(volatile uint8_t*)0x37)
+#define SPCR                    (*(volatile uint8_t*)0x4C)
+#define SPSR                    (*(volatile uint8_t*)0x4D)
+#define SPDR                    (*(volatile uint8_t*)0x4E)
+// interupt
+#define EICRA                   (*(volatile uint8_t*)0x69)
+#define EMISK                   (*(volatile uint8_t*)0x3D)
+#define EIFR                    (*(volatile uint8_t*)0x3C)
+#define PCICR
+// io
+#define PORTB                   (*(volatile uint8_t*)0x25)
+#define DDRB                    (*(volatile uint8_t*)0x24)
+#define PINB                    (*(volatile uint8_t*)0x23)
+#define PORTC                   (*(volatile uint8_t*)0x28)
+#define DDRC                    (*(volatile uint8_t*)0x27)
+#define PINC                    (*(volatile uint8_t*)0x26)
+#define PORTD                   (*(volatile uint8_t*)0x2B)
+#define DDRD                    (*(volatile uint8_t*)0x2A)
+#define PIND                    (*(volatile uint8_t*)0x29)
 
 
 
@@ -77,13 +106,15 @@ void  SET_EEPROM_MODE(EEPROM_WRITE_MODES_t mode ,void  EEPROM_Control_REG_value)
   }
   return EEPROM_Control_REG_value;
 }
-
+/* 
+ old code for wiai x Amount_of_clock_cycles--
 __attribute((always_inline)) inline void WAIT_AMOUNT_OF_CLOCK_CYCLES(int8_t Amount_of_clock_cycles){
   // caluute the clock Frequnecy 1/F = the amount time for 1 cycle
   while(Amount_of_clock_cycles--){
     __asm__ volatile ("nop");
   }
 }
+*/
 int  EEPROM_WRITE_ENABLE(){
   // consider a while but it  be nice  to not have to  have in a loop
   // Wait until EEPE becomes zero.
@@ -92,12 +123,6 @@ int  EEPROM_WRITE_ENABLE(){
     if ((SPMCSR_read&0x0)==0){
       // Write a logical one to the EEMPE bit while writing a zero to EEPE in EECR.
       EEPROM_Control_REG=0x6;
-
-      // Within four clock cycles after setting EEMPE, write a logical one to EEPE.
-      while(!(TIFRO_READ&&0x2)){
-      // do nothing for the cycles
-      }//set counter to 4 
-      
       EEPROM_Control_REG =0x2;
       return 0;
     }
@@ -168,7 +193,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A|=(0b11<<6);
           break;
         default:
-          break return -1;
+          return -1;
       }
       break;
     case PHASE_CORRECT:
@@ -186,7 +211,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1;
+          return -1;
       }
       break;
     case CTC:
@@ -205,7 +230,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1;
+         return -1;
       }
       break;
     case FAST_PWM:
@@ -225,7 +250,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1;
+         return -1;
       }
       break;
     case PHASE_CORRECT_OCRA:
@@ -243,7 +268,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1;
+          return -1;
       }
       break;
     case FAST_PWM_OCRA:
@@ -261,7 +286,7 @@ int  TCCR0A_MOODE_SET(TCCR0A_WAVEFORM_GEN_MODE_t mode,int OP){
           TCCR0A |=(0b11<<6);
           break;
         default:
-          break return -1;
+          return -1;
       }
       break;
     
@@ -293,6 +318,6 @@ void AVR_DRIVER_INIT(){
   // enable the interupt
   TIMSKO =0x2;
   // set the match flag to OCROA
-  TIFRO=
+    
  }
 #endif 
