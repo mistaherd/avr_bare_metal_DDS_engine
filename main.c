@@ -3,16 +3,25 @@
 #define BUFFER_SIZE (256/FSW)
 #include "avr.h"
 #include <stdint.h>
+
+// define the  Mmemory 
+volatile uint8_t buffer[BUFFER_SIZE];
+volatile uint16_t active_buffer_size=0;
+volatile uint16_t bufferIndex =0;
 int main(){
   AVR_DRIVER_INIT();
-  int count=0; 
-  // problem if i where to interupt everz time 4 loop happense  to do a  dft is that enough??? 
+  uint16_t count=0; 
   uint8_t buffer[BUFFER_SIZE];
-  for (int i=0;i<=0x0FF;i+=FSW){
-    if (count<BUFFER_SIZE) buffer[count++]=EEPROM_READ((uint16_t*)i);
+  for (uint16_t i=0;i<=0x0FF;i+=FSW){
+    if (count<BUFFER_SIZE){ 
+      buffer[count++]=EEPROM_READ(i);
+    }
   }
-  while(1){
+  active_buffer_size=count;
+  // we need to pump this is into the pwm to simulate a dac we are using the changeing of the pulse to feed into a  filter
 
+  while(1){
+  // main code 
   }
   return 0;  
 }
