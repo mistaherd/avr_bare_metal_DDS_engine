@@ -99,13 +99,36 @@ void __attribute__((signal,used,externally_visible)) __vector_14(void){
   }
 
 }
-
+#define testing_mode  0
 #define Clock_Frequency  8000000
 typedef enum {Erase_and_Write,Erase,Write} EEPROM_WRITE_MODES_t;
 typedef enum {Idle,ADC_Noise_Reduction,Power_Down,Power_Save,Standby=6,External_Standby} Sleep_Modes_t;
 
+int WDT_configure (int mode ){
+   // set the global interupt enable to be off.
+  SREG_REG&= ~(1<<7) ;//0x80
+  // reset watch dog timer
+  __asm__ __volatile__ ("wdr");
+  // clear WDRF
+  MCUSR&= ~(1<<3);
+  // set it as interupt mode  when in testing phase 
+  WDTCSR |=(1<<4)|(1<<3);
+  if (mode){
+  WDTCSR |=(1<<6)|((1<<0)|(1<<1)|(1<<2);
+  }
+  else{
+  WDTCSR |=(1<<3)|(1<<0) |(1<<1)|(1<<2);
+  }
+  // stopped 
+  /*
+   WDTCSR &= ~((1<<3) |(1<<6)) ; // clear  the wdt
+  // 
+  */
 
-void  SET_EEPROM_MODE(EEPROM_WRITE_MODES_t mode){
+  SREG_REG |= (1<<7);
+  return 0;
+}
+int SET_EEPROM_MODE(EEPROM_WRITE_MODES_t mode){
   switch (mode){
     case Erase_and_Write:break;
     case Erase:
@@ -193,14 +216,14 @@ void AVR_DRIVER_INIT(){
   SLEEP_MODE_SELECT(Idle);
 
   // set the global interupt enable to be on.
-  SREG_REG= 0x80;
+  SREG_REG=1<<7;// 0x80
  
   //TCCR0A_MOODE_SET(FAST_PWM,1)
   // set mode to FAST_PWM
-  TCCR0A =(0b01<<6);
+  TCCR0A =(1<<6);
   // set the mode  to FAST_PWM
   TCCR0A |=0b11;
-  TCCR0B =(0x1<<3);
+  TCCR0B =(1<<3);
   // once loaded set TCCR0B to clkio no prescaling 
   TCCR0B |=0x1;
   
@@ -213,6 +236,7 @@ void AVR_DRIVER_INIT(){
   TIFRO =0x2;
   // set the directonm of port D PD6 
   DDRD|=(1<<6);
-  
+  // configure wdt 
+  WDT_configure(testing_mode);
  }
 #endif 
