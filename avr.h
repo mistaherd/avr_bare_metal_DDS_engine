@@ -2,7 +2,7 @@
 #ifdef AVR_DRIVER_IMPLEMENTATION
 // Global buffer for PWM filter 
 // Declartions only :
-extern  volatile uint8_t buffer[];
+extern volatile uint8_t buffer[];
 extern volatile uint16_t active_buffer_size;
 extern volatile uint16_t bufferIndex;
 // avr CPU core
@@ -89,8 +89,14 @@ extern volatile uint16_t bufferIndex;
 #define SPMCS                   (*(volatile uint8_t*)0x57)
 #define SPMCSR                  (*(volatile uint8_t*)0x37)
 
+// setup the isr for wdt 
+void __attribute__((signal,used,externally_visible)) __vector_7(void){
+  PORTB ^=(1<<5);
+  // delay func 
+  PORTB ^=(1<<5);
+}
 // set up for isr 
-void __attribute__((signal,used,externally_visible)) __vector_14(void){
+void __attribute__((signal,used,externally_visible)) __vector_12(void){
   OCROA=buffer[bufferIndex];
   // problem of reaching the max vaule easily 
   bufferIndex ++;
@@ -99,6 +105,7 @@ void __attribute__((signal,used,externally_visible)) __vector_14(void){
   }
 
 }
+
 #define testing_mode  0
 #define Clock_Frequency  8000000
 typedef enum {Erase_and_Write,Erase,Write} EEPROM_WRITE_MODES_t;
@@ -209,8 +216,8 @@ void AVR_DRIVER_INIT(){
   // set Stack pointer low to the highest 
   SPL_REG =0xFF;
   // set up the adc 
-  CLKPR =0x80;
-  CLKPR =0x00;
+  CLKPR =(1<<7);
+  CLKPR &=~((1<<3)|(1<<2)|(1<<1)|(1<<0));
   // sleep mode set
   SMCR=0x1;
   SLEEP_MODE_SELECT(Idle);
@@ -236,6 +243,8 @@ void AVR_DRIVER_INIT(){
   TIFRO =0x2;
   // set the directonm of port D PD6 
   DDRD|=(1<<6);
+  // SET The dirtion of port b pb5 
+  DDRB |=(1<<5);
   // configure wdt 
   WDT_configure(testing_mode);
  }

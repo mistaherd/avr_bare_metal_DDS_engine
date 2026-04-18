@@ -32,7 +32,8 @@ int main(){
     free_arena(arena);
     return 1;
   }
-
+  printf("\nOutput array in file \n");
+  printf("[");
   uint16_t addr=0x0000; //start address for eeprom
   for(size_t j=0;j<Sample_size;j+=16){
     size_t chunk =(Sample_size-j >16)?16 :Sample_size-j;
@@ -45,6 +46,7 @@ int main(){
     // Like the printf the syntax is  (addres,string format ,amount allocated in the file,address of memeory where it is going )
     for (size_t k=0;k<chunk;k++){
       uint8_t val = (uint8_t)((buffer[j + k] + 1.0) * 127.5);
+      printf("%d,",val);
       // the (uint8_t) is type casting we are telling the compiler to keep the result of val as a uint8_t 
       fprintf(Fileptr,"%02X",val);
       checksum +=val;
@@ -55,6 +57,7 @@ int main(){
   }
   fprintf(Fileptr,":00000001FF\n");
   if(fclose(Fileptr) !=0) perror("Error while closeing file");
+  printf("]\n\r");
   arena_reset(arena);
   free_arena(arena);
 

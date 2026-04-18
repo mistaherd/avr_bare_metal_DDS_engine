@@ -22,6 +22,7 @@ int main(){
 
   while(1){
   // main code 
+  __asm__ __volatile__ ("wdr");
   }
   return 0;  
 }

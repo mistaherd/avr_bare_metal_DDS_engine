@@ -1,4 +1,5 @@
-generate_sample =gcc samplegenerator.c -std=c99 -Wall -Werror -fsanitize=address -o samplegen -lm 
+generate_sample: 
+	gcc samplegenerator.c -std=c99 -Wall -Werror -fsanitize=address -o samplegen -lm 
 dds_driver:
 	# 1. compile the Hal source 
 	avr-gcc -mmcu=atmega328p -DF_CPU=16000000UL -Os -c avr.c -o avr.o
