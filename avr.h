@@ -232,10 +232,10 @@ void AVR_DRIVER_INIT(){
   // once loaded set TCCR0B to clkio no prescaling 
   TCCR0B |=0x1;
   
-  // set the  OCROB interupt as  bit 4 
-  //OCROA |=0x10; 
   // set the timer interupt mask 
   // enable the interupt
+  // set the  OCROB interupt as  bit 4 to intional ize the timmer  
+  OCROA |=0x10; 
   TIMSKO =0x2;
   // set the match flag to OCROA
   TIFRO =0x2;
