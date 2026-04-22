@@ -91,9 +91,7 @@ extern volatile uint16_t bufferIndex;
 
 // setup the isr for wdt 
 void __attribute__((signal,used,externally_visible)) __vector_7(void){
-  PORTB ^=(1<<5);
-  // delay func 
-  PORTB ^=(1<<5);
+  PORTB |=(1<<5);
 }
 // set up for isr 
 void __attribute__((signal,used,externally_visible)) __vector_12(void){
@@ -139,7 +137,7 @@ int SET_EEPROM_MODE(EEPROM_WRITE_MODES_t mode){
   switch (mode){
     case Erase_and_Write:break;
     case Erase:
-      EECR|= 0x10;
+      EECR |= 0x10;
       break;
     case Write:
       EECR |= 0x20;
@@ -172,7 +170,7 @@ uint8_t EEPROM_READ(uint8_t* Address){
   while (EECR&0x02);// wait for  the control reg to be x005E
 
   EEARL_REG=&Address;  
-  EECR|=0x01;// eeprom read enable 
+  EECR |=0x01;// eeprom read enable 
   return EEDR;
 } 
 void EEPROM_WRITE(void* Address,uint8_t ucData){
@@ -191,7 +189,7 @@ int SLEEP_MODE_SELECT(Sleep_Modes_t mode){
       SMCR |=0x3;
       break;
     case Power_Save:
-      SMCR|=0x4;
+      SMCR |=0x4;
       break;
     case Standby:
       SMCR=0x7;
