@@ -24,4 +24,13 @@ Key manual overrides for bare-metal stability:
     . Memory Safety: Buffer-size validation to prevent data spilling from the loader into Phase Accumulator variables.
 # Calucations 
 The timer goes from 0 to 255 
-form the atmega we get the following output for the frequency that the output of  the PWM $$f_{OCNxPWM}=\frac{f_{clk\_I/O}}{N X 256}$$ we use the clock in idle mode we have the following : $$\frac{16 MHz}{255}=62745 hz$$  that means that we are trigering every 15.9375 micro seconds. Now we have to design our filter 
+form the atmega we get the following output for the frequency that the output of  the PWM $$f_{\text{OCNXPWM}}=\frac{f_{clk\_I/O}}{N X 256}$$ we use the clock in idle mode we have the following : $$\frac{16 MHz}{255}=62745 hz$$  that means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
+## Filter design 
+For this progject our `ideal cut of frequnecy is 62.725 kHz which would look like the below graph:
+
+in the real world it is  next impossible of having sincroll off this is due every circut acting like it has inducance  and capitcive attrubites 
+for this small project we just going to use a low pass filter with a 1k ohms ressitor as they are easy to get using the following formula :
+$$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$ 
+## timer Initialization
+This project i want to ensure speed and half of this is confirming how long does it take per line of code to excute at first ill set it to 64ms 
+## 

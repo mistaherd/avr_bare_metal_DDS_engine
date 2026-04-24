@@ -3,8 +3,8 @@
 // Global buffer for PWM filter 
 // Declartions only :
 extern volatile uint8_t buffer[];
-extern volatile uint16_t active_buffer_size;
-extern volatile uint16_t bufferIndex;
+extern volatile uint8_t active_buffer_size;
+extern volatile uint8_t bufferIndex;
 // avr CPU core
 #define SREG_REG                (*(volatile uint8_t*)0x3F)// we write to  to as  value
 #define SPH_REG                 (*(volatile uint8_t*)0x3E)
@@ -50,8 +50,8 @@ extern volatile uint16_t bufferIndex;
 #define TCCR0B                  (*(volatile uint8_t*)0x25) // control clock divider
 #define TCNTO                   (*(volatile uint8_t*)0x26)
 //#define TCNTO_READ              (*(volatile uint8_t*)0x26)
-#define OCROA                   (*(volatile uint8_t*)0x27)
-#define OCROB                   (*(volatile uint8_t*)0x28)
+#define OCR0A                   (*(volatile uint8_t*)0x27)
+#define OCR0B                   (*(volatile uint8_t*)0x28)
 #define TIMSKO                  (*(volatile uint8_t*)0x6E)
 #define TIFRO                   (*(volatile uint8_t*)0x15)
 // 16 bit timer with pwm counter 1
@@ -92,24 +92,21 @@ extern volatile uint16_t bufferIndex;
 // setup the isr for wdt 
 void __attribute__((signal,used,externally_visible)) __vector_7(void){
   PORTB |=(1<<5);
+  // system resets aftee this 
 }
 // set up for isr 
 void __attribute__((signal,used,externally_visible)) __vector_12(void){
-  OCROA=buffer[bufferIndex];
+  OCR0A=buffer[bufferIndex];
   // problem of reaching the max vaule easily 
   bufferIndex ++;
-  if (bufferIndex >=active_buffer_size){
-    bufferIndex=0;
-  }
-
 }
 
-#define testing_mode  0
 #define Clock_Frequency  8000000
 typedef enum {Erase_and_Write,Erase,Write} EEPROM_WRITE_MODES_t;
 typedef enum {Idle,ADC_Noise_Reduction,Power_Down,Power_Save,Standby=6,External_Standby} Sleep_Modes_t;
 
-int WDT_configure (int mode ){
+int WDT_configure (){
+
    // set the global interupt enable to be off.
   SREG_REG&= ~(1<<7) ;//0x80
   // reset watch dog timer
@@ -117,19 +114,9 @@ int WDT_configure (int mode ){
   // clear WDRF
   MCUSR&= ~(1<<3);
   // set it as interupt mode  when in testing phase 
-  WDTCSR |=(1<<4)|(1<<3);
-  if (mode){
-  WDTCSR |=(1<<6)|((1<<0)|(1<<1)|(1<<2);
-  }
-  else{
-  WDTCSR |=(1<<3)|(1<<0) |(1<<1)|(1<<2);
-  }
-  // stopped 
-  /*
-   WDTCSR &= ~((1<<3) |(1<<6)) ; // clear  the wdt
-  // 
-  */
-
+  WDTCSR |=(1<<6)|(1<<4)|(1<<3);
+  // set the time to 65 ms
+  WDTCSR |=(1<<1)|(1<<0); 
   SREG_REG |= (1<<7);
   return 0;
 }
@@ -145,7 +132,7 @@ int SET_EEPROM_MODE(EEPROM_WRITE_MODES_t mode){
     default:
       return -1;
   }
-  return;
+  return 0;
 }
 
 int  EEPROM_WRITE_ENABLE(){
@@ -165,15 +152,15 @@ int  EEPROM_WRITE_ENABLE(){
     return -1;   
   }
 }
-uint8_t EEPROM_READ(uint8_t* Address){
+uint8_t EEPROM_READ(uint8_t Address){
   // wait for completion of  previous write 
-  while (EECR&0x02);// wait for  the control reg to be x005E
+  while (EECR&(1<<1));// wait for  the control reg to be 0 
 
-  EEARL_REG=&Address;  
-  EECR |=0x01;// eeprom read enable 
+  EEARL_REG=Address;  
+  EECR |=(1<<0);// eeprom read enable 
   return EEDR;
 } 
-void EEPROM_WRITE(void* Address,uint8_t ucData){
+void EEPROM_WRITE(uint8_t Address,uint8_t ucData){
   EEPROM_WRITE_ENABLE();
   EEARL_REG=Address;
   EEDR=ucData;
@@ -208,7 +195,7 @@ void Move_interputs(void){
 }
 
 
-void AVR_DRIVER_INIT(){
+int  AVR_DRIVER_INIT(){
   // set Stack pointer high to the highest 
   SPH_REG = 0x08;
   // set Stack pointer low to the highest 
@@ -221,7 +208,7 @@ void AVR_DRIVER_INIT(){
   SLEEP_MODE_SELECT(Idle);
 
   // set the global interupt enable to be on.
-  SREG_REG=1<<7;// 0x80
+  SREG_REG|=(1<<7);// 0x80
  
   //TCCR0A_MOODE_SET(FAST_PWM,1)
   // set mode to FAST_PWM
@@ -235,7 +222,7 @@ void AVR_DRIVER_INIT(){
   // set the timer interupt mask 
   // enable the interupt
   // set the  OCROB interupt as  bit 4 to intional ize the timmer  
-  OCROA |=0x10; 
+  OCR0A |=0x80; 
   TIMSKO =0x2;
   // set the match flag to OCROA
   TIFRO =0x2;
@@ -244,6 +231,7 @@ void AVR_DRIVER_INIT(){
   // SET The dirtion of port b pb5 
   DDRB |=(1<<5);
   // configure wdt 
-  WDT_configure(testing_mode);
+  WDT_configure();
+  return 0;
  }
 #endif 

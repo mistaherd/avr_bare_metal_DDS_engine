@@ -1,18 +1,18 @@
 #define AVR_DRIVER_IMPLEMENTATION
 #define FSW 1
-#define BUFFER_SIZE (256/FSW)
+#define BUFFER_SIZE 256
 #include "avr.h"
 #include <stdint.h>
 
 // define the  Mmemory 
 volatile uint8_t buffer[BUFFER_SIZE];
-volatile uint16_t active_buffer_size=0;
-volatile uint16_t bufferIndex =0;
+volatile uint8_t active_buffer_size=0;
+volatile uint8_t bufferIndex =0;
 int main(){
   AVR_DRIVER_INIT();
-  uint16_t count=0; 
-  uint8_t buffer[BUFFER_SIZE];
-  for (uint16_t i=0;i<=0x0FF;i+=FSW){
+  uint8_t count=0; 
+  //uint8_t buffer[BUFFER_SIZE];
+  for (uint8_t i=0;i<=0x0FF;i+=FSW){
     if (count<BUFFER_SIZE){ 
       buffer[count++]=EEPROM_READ(i);
     }
