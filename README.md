@@ -9,7 +9,7 @@ Implementation of a Direct Digital Synthesis signal chain using custom AVR drive
 
     . EEPROM Integration: Writing validated hex data directly to EEPROM for waveform storage.
 
-    . Synthesis: Implementing a Phase Accumulator utilizing the hardware clock.
+    . Synthesis: Implementing a Phase Accumulator utilising the hardware clock.
 
     . Output: Accessing memory via the phase accumulator to drive the on-board DAC (PWM) and hardware filtering.
 
@@ -22,15 +22,15 @@ Key manual overrides for bare-metal stability:
     . Stack Initialization: Manual pointer setup (SPH = 0x08, SPL = 0xFF) within AVR_DRIVER_INIT.
 
     . Memory Safety: Buffer-size validation to prevent data spilling from the loader into Phase Accumulator variables.
-# Calucations 
+# Calculations 
 The timer goes from 0 to 255 
 form the atmega we get the following output for the frequency that the output of  the PWM $$f_{\text{OCNXPWM}}=\frac{f_{clk\_I/O}}{N X 256}$$ we use the clock in idle mode we have the following : $$\frac{16 MHz}{255}=62745 hz$$  that means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
 ## Filter design 
-For this progject our `ideal cut of frequnecy is 62.725 kHz which would look like the below graph:
+For this project, our ideal cut of frequency is 62.725 kHz, which would look like the graph below:
 
-in the real world it is  next impossible of having sincroll off this is due every circut acting like it has inducance  and capitcive attrubites 
-for this small project we just going to use a low pass filter with a 1k ohms ressitor as they are easy to get using the following formula :
+In the real world, it is  almost impossible to have sincroll off. This is due to every circuit acting like it has inductance  and capacitive attributes 
+For this small project, we are just going to use a low-pass filter with a 4k ohms resistor, as they are easy to get using the following formula :
 $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$ 
-## timer Initialization
-This project i want to ensure speed and half of this is confirming how long does it take per line of code to excute at first ill set it to 64ms 
+## timer Initialisation
+In this project, I want to ensure speed, and half of this is confirming how long does it takes per line of code to execute. At first ill set it to 64ms 
 ## 
