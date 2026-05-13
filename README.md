@@ -34,7 +34,9 @@ $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$
 ## Timer Initialisation
 ### PWM 
 - In order to get the right frequency i set the timer frequency to $16_{M}hz/64$ 
+
 - with this its recommed to set FSW to 6
+
 $$\frac{6x10^3(2^8)}{\frac{16x10^6}{64}} \approx 6 $$
 ### Watchdog Timer
 In this project, I want to ensure speed, and half of this is confirming how long does it takes per line of code to execute. At first ill set it to 64ms 
