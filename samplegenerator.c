@@ -42,7 +42,7 @@ int main(){
     for (size_t k=0;k<chunk;k++){
       //uint8_t val = (uint8_t)((buffer[j + k] + 1.0) * 127.5);
       // making sure pwm operates at 5khm
-      uint8_t val=(uint8_t)((buffer[j+k]+1.0)*5.23);
+      uint8_t val=(uint8_t)((buffer[j+k]+1.0)*127.5);
       // the (uint8_t) is type casting we are telling the compiler to keep the result of val as a uint8_t 
       fprintf(Fileptr,"%02X",val);
       checksum +=val;

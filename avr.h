@@ -89,6 +89,7 @@ extern volatile uint8_t bufferIndex;
 #define SPMCS                   (*(volatile uint8_t*)0x57)
 #define SPMCSR                  (*(volatile uint8_t*)0x37)
 
+#define FSW 6
 // setup the isr for wdt 
 void __attribute__((signal,used,externally_visible)) __vector_7(void){
   PORTB |=(1<<5);
@@ -98,7 +99,7 @@ void __attribute__((signal,used,externally_visible)) __vector_7(void){
 void __attribute__((signal,used,externally_visible)) __vector_12(void){
   OCR0A=buffer[bufferIndex];
   // problem of reaching the max vaule easily 
-  bufferIndex ++;
+  bufferIndex +FSW;
 }
 
 #define Clock_Frequency  8000000
@@ -215,14 +216,11 @@ int  AVR_DRIVER_INIT(){
   TCCR0A =(1<<6);
   // set the mode  to FAST_PWM
   TCCR0A |=0b11;
-  TCCR0B =(1<<3);
+  TCCR0B =~(1<<6)|(1<<3);
   // once loaded set TCCR0B to clkio no prescaling 
-  TCCR0B |=0x1;
-  
+  TCCR0B |=(1<<1)|(1<<0);
   // set the timer interupt mask 
   // enable the interupt
-  // set the  OCROB interupt as  bit 4 to intional ize the timmer  
-  OCR0A |=0x80; 
   TIMSKO =0x2;
   // set the match flag to OCROA
   TIFRO =0x2;

@@ -1,5 +1,4 @@
 #define AVR_DRIVER_IMPLEMENTATION
-#define FSW 1
 #define BUFFER_SIZE 256
 #include "avr.h"
 #include <stdint.h>
@@ -12,12 +11,15 @@ int main(){
   AVR_DRIVER_INIT();
   uint8_t count=0; 
   //uint8_t buffer[BUFFER_SIZE];
-  for (uint8_t i=0;i<=0x0FF;i+=FSW){
+  for (uint8_t i=0;i<=0x0FF;i++){
     if (count<BUFFER_SIZE){ 
       buffer[count++]=EEPROM_READ(i);
     }
   }
   active_buffer_size=count;
+  // set the  OCROA interupt as  bit 4 to intionalize the timer  
+  OCR0A |=(1<<4); 
+ 
   // we need to pump this is into the pwm to simulate a dac we are using the changeing of the pulse to feed into a  filter
 
   while(1){
