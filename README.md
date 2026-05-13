@@ -30,7 +30,7 @@ For this project, our ideal cut of frequency is 62.725 kHz, which would look lik
 In the real world, it is  almost impossible to have sincroll off. This is due to every circuit acting like it has inductance  and capacitive attributes 
 For this small project, we are just going to use a low-pass filter with a 4k ohms resistor, as they are easy to get using the following formula :
 $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$
-
+![Ideal Response](Ideal_response.png)
 ## Timer Initialisation
 ### PWM 
 - In order to get the right frequency i set the timer frequency to $16_{M}hz/64$ 
