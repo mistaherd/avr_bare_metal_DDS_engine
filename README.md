@@ -44,7 +44,7 @@ $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$
 
 ## Timer Initialisation
 ### PWM 
-- In order to get the right frequency i set the timer frequency to $16_{M}hz/64$ 
+- In order to get the right frequency i set the timer frequency to $16_{Mhz}/64$ 
 
 - with this its recommed to set FSW to 6
 
