@@ -23,12 +23,19 @@ Key manual overrides for bare-metal stability:
 - Memory Safety: Buffer-size validation to prevent data spilling from the loader into Phase Accumulator variables.
 # Calculations 
 The timer goes from 0 to 255 
-form the atmega we get the following output for the frequency that the output of  the PWM $$f_{\text{OCNXPWM}}=\frac{f_{clk\_I/O}}{N X 256}$$ we use the clock in idle mode we have the following : $$\frac{16 MHz}{255}=62745 hz$$  that means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
+form the atmega we get the following output for the frequency that the output of  the PWM 
+
+$$f_{\text{OCNXPWM}}=\frac{f_{clk\_I/O}}{N X 256}$$
+
+we use the clock in idle mode we have the following : 
+
+$$\frac{16 MHz}{255}=62745 hz$$  that means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
 ## Filter design 
 For this project, our ideal cut of frequency is 62.725 kHz, which would look like the graph below:
 
 In the real world, it is  almost impossible to have sincroll off. This is due to every circuit acting like it has inductance  and capacitive attributes 
 For this small project, we are just going to use a low-pass filter with a 4k ohms resistor, as they are easy to get using the following formula :
+
 $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$
 ![Ideal Response](Ideal_response.png)
 ## Timer Initialisation
@@ -40,4 +47,3 @@ $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$
 $$\frac{6x10^3(2^8)}{\frac{16x10^6}{64}} \approx 6 $$
 ### Watchdog Timer
 In this project, I want to ensure speed, and half of this is confirming how long does it takes per line of code to execute. At first ill set it to 64ms 
-
