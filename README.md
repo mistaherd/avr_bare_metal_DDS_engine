@@ -31,7 +31,7 @@ we use the clock in idle mode we have the following :
 
 $$\frac{16 MHz}{255}=62745 hz$$ 
 
-That means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
+That means that we are triggering every 15.9375 micro seconds. Now we have to design our filter
 ## Filter design 
 For this project, our ideal cut of frequency is 62.725 kHz, which would look like the graph below:
 
@@ -46,7 +46,7 @@ $$6.2745_{kHz}=\frac{1}{2\pi 1k_{ohms}C}\space \therefore C \approx 25.37_{nF}$$
 ### PWM 
 - In order to get the right frequency i set the timer frequency to $16_{Mhz}/64$ 
 
-- with this its recommed to set FSW to 6
+- with this its recommend to set FSW to 6
 
 $$\frac{6x10^3(2^8)}{\frac{16x10^6}{64}} \approx 6 $$
 ### Watchdog Timer
