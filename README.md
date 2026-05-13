@@ -29,8 +29,9 @@ $$f_{\text{OCNXPWM}}=\frac{f_{clk\_I/O}}{N X 256}$$
 
 we use the clock in idle mode we have the following : 
 
-$$\frac{16 MHz}{255}=62745 hz$$  
-that means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
+$$\frac{16 MHz}{255}=62745 hz$$ 
+
+That means that we are trigering every 15.9375 micro seconds. Now we have to design our filter
 ## Filter design 
 For this project, our ideal cut of frequency is 62.725 kHz, which would look like the graph below:
 
