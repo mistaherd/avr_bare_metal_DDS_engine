@@ -143,8 +143,10 @@ int  EEPROM_WRITE_ENABLE(){
     // Wait until SELFPRGEN in SPMCSR becomes zero.
     if ((SPMCSR&0x0)==0){
       // Write a logical one to the EEMPE bit while writing a zero to EEPE in EECR.
-      EECR=0x6;
-      EECR=0x2;
+      //EECR=0x6;
+      EECR=(1<<2)|~(1<<1);
+      // make sure this happens within 4 clk cyclese
+      EECR=(1<<1);
       return 0;
     }
 
